@@ -24,4 +24,26 @@
         <item>720</item>
         <item>1440</item>
     </string-array>
+
+    <string-array name="array_jitter_deviation">
+        <item>1 meter</item>
+        <item>10 meters</item>
+        <item>20 meters</item>
+        <item>50 meters</item>
+        <item>100 meters</item>
+        <item>200 meters</item>
+        <item>500 meters</item>
+        <item>1 kilometer</item>
+    </string-array>
+
+    <string-array name="array_jitter_deviation_vals">
+        <item>0.001</item>
+        <item>0.01</item>
+        <item>0.02</item>
+        <item>0.05</item>
+        <item>0.1</item>
+        <item>0.2</item>
+        <item>0.5</item>
+        <item>1.0</item>
+    </string-array>
 </resources>

@@ -23,5 +23,19 @@
             android:summary="%s"
             android:title="Update interval"
             android:dependency="RANDOMIZE_LOCATION"/>
+
+        <CheckBoxPreference
+          android:defaultValue="false"
+          android:key="JITTER_LOCATION"
+          android:title="Jitter location"/>
+
+        <ListPreference
+          android:defaultValue="5"
+          android:entries="@array/array_jitter_deviation"
+          android:entryValues="@array/array_jitter_deviation_vals"
+          android:key="JITTER_DEVIATION"
+          android:summary="%s"
+          android:title="Jitter deviation"
+          android:dependency="JITTER_LOCATION"/>
     </PreferenceCategory>
 </PreferenceScreen>

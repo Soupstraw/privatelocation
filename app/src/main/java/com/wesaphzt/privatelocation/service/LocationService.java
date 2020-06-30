@@ -54,6 +54,11 @@ public class LocationService extends Service {
     public static boolean isRunning = false;
     private static int RANDOMIZE_LOCATION_INTERVAL;
 
+	//jitter
+    public static CountDownTimer jitterCD;
+    private static boolean jitterRunning = false;
+    private static float JITTER_DEVIATION;
+
     public static final String ACTION_STOP_FOREGROUND_SERVICE = "ACTION_STOP_FOREGROUND_SERVICE";
     public static final String ACTION_START_FOREGROUND_SERVICE = "ACTION_START_FOREGROUND_SERVICE";
 
@@ -192,6 +197,9 @@ public class LocationService extends Service {
                 if(sharedPreferences.getBoolean("RANDOMIZE_LOCATION", false)) {
                     randomize();
                 }
+				if(sharedPreferences.getBoolean("JITTER_LOCATION", false)) {
+					jitterLocation();
+				}
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -245,6 +253,23 @@ public class LocationService extends Service {
         }
     }
 
+	private void jitterLocation() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        try {
+            JITTER_DEVIATION = Float.parseFloat(prefs.getString("JITTER_DEVIATION", "5.0"));
+
+            mockNetwork = new LocationProvider(LocationManager.NETWORK_PROVIDER, context);
+            mockGps = new LocationProvider(LocationManager.GPS_PROVIDER, context);
+
+			mockNetwork.jitterLocation(JITTER_DEVIATION);
+			mockGps.jitterLocation(JITTER_DEVIATION);
+
+            randomizeTimer();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+	}
+
     private void randomizeTimer() {
         mCountDown = new CountDownTimer(RANDOMIZE_LOCATION_INTERVAL * 1000 * 60, 1000) {
             public void onTick(long millisUntilFinished) {
@@ -256,6 +281,21 @@ public class LocationService extends Service {
             }
         }.start();
     }
+
+	private void jitterTimer() {
+        Random r = new Random();
+		// Jitters the location every 30s +- 10s
+		long randomInterval = 20000 + r.nextLong() % 20000;
+        jitterCD = new CountDownTimer(randomInterval, 1000) {
+			public void onTick(long millisUntilFinished){
+				jitterRunning = true;
+			}
+			public void onFinish() {
+				jitterRunning = false;
+				jitterLocation();
+			}
+		}.start();
+	}
 
     private float randomLat() {
         Random r = new Random();
